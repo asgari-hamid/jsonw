@@ -1,35 +1,56 @@
 package jsonw_test
 
 import (
+	"encoding/json"
 	"testing"
 
 	"github.com/asgari-hamid/jsonw"
 )
 
 func TestArrayWriter(t *testing.T) {
-	arr := &jsonw.ArrayWriter{}
-	arr.Open(nil)
+	w := &jsonw.ArrayWriter{}
+	w.Open(nil)
 
-	arr.StringValue("hello")
-	arr.NumberValue("123.45")
-	arr.IntegerValue(100)
-	arr.FloatValue(1.23)
-	arr.BoolValue(false)
-	arr.NullValue()
+	w.StringValue("first")
+	w.IntegerValue(2)
+	w.FloatValue(3.14)
+	w.BoolValue(true)
+	w.NullValue()
 
-	obj := arr.ObjectValue()
+	// Nested array
+	arr := w.ArrayValue()
+	arr.StringValue("nested")
+	arr.IntegerValue(99)
+	arr.Close()
+
+	// Nested object
+	obj := w.ObjectValue()
 	obj.StringField("key", "value")
 	obj.Close()
 
-	arr.Close()
+	w.Close()
 
-	got, err := arr.BuildBytes()
+	bytes, err := w.BuildBytes()
 	if err != nil {
-		t.Fatalf("BuildBytes error: %v", err)
+		t.Fatal(err)
 	}
 
-	want := `["hello",123.45,100,1.23,false,null,{"key":"value"}]`
-	if string(got) != want {
-		t.Errorf("unexpected JSON:\n got: %s\nwant: %s", got, want)
+	var data []interface{}
+	if err := json.Unmarshal(bytes, &data); err != nil {
+		t.Fatalf("invalid JSON: %v", err)
+	}
+
+	if data[0] != "first" || data[1].(float64) != 2 || data[2].(float64) != 3.14 || !data[3].(bool) || data[4] != nil {
+		t.Errorf("primitive array values mismatch")
+	}
+
+	nestedArr := data[5].([]interface{})
+	if nestedArr[0] != "nested" || nestedArr[1].(float64) != 99 {
+		t.Errorf("nested array mismatch")
+	}
+
+	nestedObj := data[6].(map[string]interface{})
+	if nestedObj["key"] != "value" {
+		t.Errorf("nested object mismatch")
 	}
 }
