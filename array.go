@@ -2,11 +2,15 @@ package jsonw
 
 import "github.com/mailru/easyjson/jwriter"
 
+// ArrayWriter provides a low-level JSON array builder using easyjson's jwriter.Writer.
+// It supports appending values of different types, including nested arrays and objects.
 type ArrayWriter struct {
 	writer     *jwriter.Writer
 	needsComma bool
 }
 
+// Open initializes the ArrayWriter with a given jwriter.Writer.
+// If writer is nil, a new writer will be created. It also writes the opening '['.
 func (w *ArrayWriter) Open(writer *jwriter.Writer) {
 	if writer == nil {
 		w.writer = &jwriter.Writer{}
@@ -18,6 +22,7 @@ func (w *ArrayWriter) Open(writer *jwriter.Writer) {
 	w.needsComma = false
 }
 
+// ObjectValue appends a new object to the array and returns an ObjectWriter for it.
 func (w *ArrayWriter) ObjectValue() *ObjectWriter {
 	if w.needsComma {
 		w.writer.RawByte(comma)
@@ -28,6 +33,7 @@ func (w *ArrayWriter) ObjectValue() *ObjectWriter {
 	return obj
 }
 
+// ArrayValue appends a new array to the array and returns an ArrayWriter for it.
 func (w *ArrayWriter) ArrayValue() *ArrayWriter {
 	if w.needsComma {
 		w.writer.RawByte(comma)
@@ -38,6 +44,7 @@ func (w *ArrayWriter) ArrayValue() *ArrayWriter {
 	return arr
 }
 
+// StringValue appends a string value to the array.
 func (w *ArrayWriter) StringValue(value string) {
 	if w.needsComma {
 		w.writer.RawByte(comma)
@@ -48,6 +55,7 @@ func (w *ArrayWriter) StringValue(value string) {
 	w.needsComma = true
 }
 
+// NumberValue appends a raw number (as string) to the array.
 func (w *ArrayWriter) NumberValue(value string) {
 	if w.needsComma {
 		w.writer.RawByte(comma)
@@ -58,6 +66,7 @@ func (w *ArrayWriter) NumberValue(value string) {
 	w.needsComma = true
 }
 
+// IntegerValue appends an int64 value to the array.
 func (w *ArrayWriter) IntegerValue(value int64) {
 	if w.needsComma {
 		w.writer.RawByte(comma)
@@ -68,6 +77,7 @@ func (w *ArrayWriter) IntegerValue(value int64) {
 	w.needsComma = true
 }
 
+// FloatValue appends a float64 value to the array.
 func (w *ArrayWriter) FloatValue(value float64) {
 	if w.needsComma {
 		w.writer.RawByte(comma)
@@ -78,16 +88,18 @@ func (w *ArrayWriter) FloatValue(value float64) {
 	w.needsComma = true
 }
 
-func (w *ArrayWriter) BoolValue(b bool) {
+// BoolValue appends a boolean value to the array.
+func (w *ArrayWriter) BoolValue(value bool) {
 	if w.needsComma {
 		w.writer.RawByte(comma)
 	}
 
-	w.writer.Bool(b)
+	w.writer.Bool(value)
 
 	w.needsComma = true
 }
 
+// NullValue appends a JSON null to the array.
 func (w *ArrayWriter) NullValue() {
 	if w.needsComma {
 		w.writer.RawByte(comma)
@@ -98,10 +110,14 @@ func (w *ArrayWriter) NullValue() {
 	w.needsComma = true
 }
 
+// Close writes the closing ']' for the array.
 func (w *ArrayWriter) Close() {
 	w.writer.RawByte(closeBracket)
+
+	w.needsComma = false
 }
 
+// BuildBytes returns the JSON bytes written by the writer.
 func (w *ArrayWriter) BuildBytes() ([]byte, error) {
 	return w.writer.BuildBytes()
 }
