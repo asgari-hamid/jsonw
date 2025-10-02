@@ -1,4 +1,4 @@
-# JSON Writer Wrapper
+# jsonw
 
 A lightweight Go library providing a higher-level wrapper around [EasyJSON](https://github.com/mailru/easyjson)'s `jwriter.Writer` for manual, low-level JSON generation.  
 
@@ -16,4 +16,4 @@ Supports nested objects and arrays, all JSON value types, and proper string esca
 ## Installation
 
 ```bash
-go get github.com/yourusername/json-writer-wrapper
+go get github.com/asgari-hamid/jsonw
