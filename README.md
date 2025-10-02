@@ -1,19 +1,20 @@
 # jsonw
 
-A lightweight Go library providing a higher-level wrapper around [EasyJSON](https://github.com/mailru/easyjson)'s `jwriter.Writer` for manual, low-level JSON generation.  
+[![Go Reference](https://pkg.go.dev/badge/github.com/asgari-hamid/jsonw.svg)](https://pkg.go.dev/github.com/asgari-hamid/jsonw)
+[![Go Report Card](https://goreportcard.com/badge/github.com/asgari-hamid/jsonw)](https://goreportcard.com/report/github.com/asgari-hamid/jsonw)
+![CI](https://github.com/asgari-hamid/jsonw/actions/workflows/go.yml/badge.svg)
 
-Supports nested objects and arrays, all JSON value types, and proper string escaping. Ideal for building JSON payloads dynamically based on field masks or custom serialization logic.
+A small Go library that provides **low-level JSON writing** with a clean API.  
+It is built on top of [`easyjson/jwriter`](https://pkg.go.dev/github.com/mailru/easyjson/jwriter) for high performance and zero allocations when writing JSON.
 
-## Features
+Unlike `encoding/json`, this package lets you **manually control JSON output**, which is useful when:
+- You want to respect a field mask provided by a client.
+- You need fine-grained control over escaping, formatting, and ordering.
+- You care about performance and memory allocations.
 
-- Handles all JSON value types:  
-  - `string`, `number`, `integer`, `float`, `boolean`, `null`  
-- Nested arrays and objects  
-- Automatic comma management  
-- Proper JSON escaping, including special characters and Unicode line separators  
-- Low-level, efficient writing with minimal allocations using EasyJSON buffers  
+---
 
-## Installation
+## 📦 Installation
 
 ```bash
 go get github.com/asgari-hamid/jsonw
