@@ -9,15 +9,19 @@ type ObjectWriter struct {
 	needsComma bool
 }
 
-// Open initializes the ObjectWriter with a given jwriter.Writer.
-// If writer is nil, a new writer will be created. It also writes the opening '{'.
-func (w *ObjectWriter) Open(writer *jwriter.Writer) {
+// NewObjectWriter constructs a new ObjectWriter with optionally a writer from parent.
+func NewObjectWriter(writer *jwriter.Writer) *ObjectWriter {
 	if writer == nil {
-		w.writer = &jwriter.Writer{}
-	} else {
-		w.writer = writer
+		writer = &jwriter.Writer{}
 	}
+	return &ObjectWriter{
+		writer:     writer,
+		needsComma: false,
+	}
+}
 
+// Open writes the opening '{' for the object.
+func (w *ObjectWriter) Open() {
 	w.writer.RawByte(openBrace)
 	w.needsComma = false
 }
@@ -32,9 +36,9 @@ func (w *ObjectWriter) ObjectField(name string) *ObjectWriter {
 	w.writer.RawString(name)
 	w.writer.Raw(quoteColon, nil)
 
-	obj := &ObjectWriter{}
-	obj.Open(w.writer)
-	return obj
+	w.needsComma = true
+
+	return NewObjectWriter(w.writer)
 }
 
 // ArrayField starts a new nested array field with the given name and returns an ArrayWriter.
@@ -47,9 +51,9 @@ func (w *ObjectWriter) ArrayField(name string) *ArrayWriter {
 	w.writer.RawString(name)
 	w.writer.Raw(quoteColon, nil)
 
-	arr := &ArrayWriter{}
-	arr.Open(w.writer)
-	return arr
+	w.needsComma = true
+
+	return NewArrayWriter(w.writer)
 }
 
 // StringField writes a string field to the object.

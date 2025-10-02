@@ -9,15 +9,19 @@ type ArrayWriter struct {
 	needsComma bool
 }
 
-// Open initializes the ArrayWriter with a given jwriter.Writer.
-// If writer is nil, a new writer will be created. It also writes the opening '['.
-func (w *ArrayWriter) Open(writer *jwriter.Writer) {
+// NewArrayWriter constructs a new ArrayWriter with optionally a writer from parent.
+func NewArrayWriter(writer *jwriter.Writer) *ArrayWriter {
 	if writer == nil {
-		w.writer = &jwriter.Writer{}
-	} else {
-		w.writer = writer
+		writer = &jwriter.Writer{}
 	}
+	return &ArrayWriter{
+		writer:     writer,
+		needsComma: false,
+	}
+}
 
+// Open writes the opening '[' for the array.
+func (w *ArrayWriter) Open() {
 	w.writer.RawByte(openBracket)
 	w.needsComma = false
 }
@@ -28,9 +32,9 @@ func (w *ArrayWriter) ObjectValue() *ObjectWriter {
 		w.writer.RawByte(comma)
 	}
 
-	obj := &ObjectWriter{}
-	obj.Open(w.writer)
-	return obj
+	w.needsComma = true
+
+	return NewObjectWriter(w.writer)
 }
 
 // ArrayValue appends a new array to the array and returns an ArrayWriter for it.
@@ -39,9 +43,9 @@ func (w *ArrayWriter) ArrayValue() *ArrayWriter {
 		w.writer.RawByte(comma)
 	}
 
-	arr := &ArrayWriter{}
-	arr.Open(w.writer)
-	return arr
+	w.needsComma = true
+
+	return NewArrayWriter(w.writer)
 }
 
 // StringValue appends a string value to the array.
