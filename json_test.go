@@ -21,7 +21,7 @@ func TestArrayWriter_Primitives(t *testing.T) {
 	w.StringValue("hello")
 	w.IntegerValue(42)
 	w.FloatValue(3.14)
-	w.BoolValue(true)
+	w.BooleanValue(true)
 	w.NullValue()
 	w.Close()
 
@@ -75,7 +75,7 @@ func TestObjectWriter_Primitives(t *testing.T) {
 	w.StringField("str", "hello")
 	w.IntegerField("int", 42)
 	w.FloatField("float", 3.14)
-	w.BoolField("bool", true)
+	w.BooleanField("bool", true)
 	w.NullField("null")
 	w.Close()
 
