@@ -92,8 +92,8 @@ func (w *ArrayWriter) FloatValue(value float64) {
 	w.needsComma = true
 }
 
-// BoolValue appends a boolean value to the array.
-func (w *ArrayWriter) BoolValue(value bool) {
+// BooleanValue appends a boolean value to the array.
+func (w *ArrayWriter) BooleanValue(value bool) {
 	if w.needsComma {
 		w.writer.RawByte(comma)
 	}

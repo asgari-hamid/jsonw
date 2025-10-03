@@ -112,8 +112,8 @@ func (w *ObjectWriter) FloatField(name string, value float64) {
 	w.needsComma = true
 }
 
-// BoolField writes a boolean field to the object.
-func (w *ObjectWriter) BoolField(name string, b bool) {
+// BooleanField writes a boolean field to the object.
+func (w *ObjectWriter) BooleanField(name string, value bool) {
 	if w.needsComma {
 		w.writer.RawByte(comma)
 	}
@@ -122,7 +122,7 @@ func (w *ObjectWriter) BoolField(name string, b bool) {
 	w.writer.RawString(name)
 	w.writer.Raw(quoteColon, nil)
 
-	w.writer.Bool(b)
+	w.writer.Bool(value)
 
 	w.needsComma = true
 }
